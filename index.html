@@ -142,20 +142,15 @@
 		$(".play").click(function(){
 			if(once){
 				loadMusic(music_list[musicIndex]);
-				music.autoplay = true;
-				$(".play i").removeClass('fa-play');
-				$(".play i").addClass('fa-pause');
+				playObj();
 				jindutiao();
 				once = false;
 			}else{
 				if ($(".play i").hasClass('fa-play')) {
-					$(".play i").removeClass('fa-play');
-					$(".play i").addClass('fa-pause');
-					
+					playObj();
 					music.play();
 				} else {
-					$(".play i").removeClass('fa-pause');
-					$(".play i").addClass('fa-play');
+					pauseObj();
 					music.pause();
 				}
 			}
@@ -198,6 +193,15 @@
 		}
 		
 		
+		function playObj(){
+			$(".play i").removeClass('fa-play');
+			$(".play i").addClass('fa-pause');
+			music.autoplay = true;
+		}
+		function pauseObj(){
+			$(".play i").removeClass('fa-pause');
+			$(".play i").addClass('fa-play');
+		}
 		//加载音乐Fun
 		function loadMusic(song){
 			music.src = song.src;
@@ -211,6 +215,7 @@
 				musicIndex=0;
 			}
 			loadMusic(music_list[musicIndex]);
+			playObj();
 		}
 		//上一曲Fun
 		function backMusic(){
@@ -219,6 +224,7 @@
 				musicIndex=musicNumber-1;
 			}
 			loadMusic(music_list[musicIndex]);
+			playObj();
 		}
 	</script>
 </html>
