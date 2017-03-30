@@ -143,8 +143,6 @@
 			if(once){
 				loadMusic(music_list[musicIndex]);
 				playObj();
-				jindutiao();
-				once = false;
 			}else{
 				if ($(".play i").hasClass('fa-play')) {
 					playObj();
@@ -196,6 +194,8 @@
 		function playObj(){
 			$(".play i").removeClass('fa-play');
 			$(".play i").addClass('fa-pause');
+			jindutiao();
+			once = false;
 			music.autoplay = true;
 		}
 		function pauseObj(){
