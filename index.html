@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>music</title>
+		<link rel="stylesheet" type="text/css" href="http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+		<script src="js/jquery-3.1.0.min.js" type="text/javascript" charset="utf-8"></script>
+		<style type="text/css">
+			*{
+				padding: 0;
+				margin: 0;
+				font-family: "微软雅黑";
+			}
+			.musicBox{
+				width: 500px;
+				height: 150px;
+				padding: 20px;
+				border: 1px solid #999;
+				border-radius: 10px;
+				margin: 100px auto;
+				color: #EE8A87;
+			}
+			.control{
+				margin-top: 40px;
+				font-size: 24px;
+				width: 100px;
+				display: flex;
+				justify-content: space-around;
+				float: left;
+			}
+			.control span{
+				cursor: pointer;
+			}
+			.info{
+				width: 400px;
+				text-align: center;
+				line-height: 40px;
+			}
+			.info .music_title{
+				font-size: 26px;
+			}
+			.info .music_author{
+				font-size: 20px;
+			}
+			.bar{
+				margin-top: 30px;
+				width: 400px;
+				height: 4px;
+				position: relative;
+				cursor: pointer;
+			}
+			.bar_total{
+				width: 400px;
+				height: 4px;
+				background-color: #C0C0C0;
+				position: absolute;
+				left: 0;
+				top: 0;			
+			}
+			.bar_now{
+				height: 4px;
+				background-color: #EE8A87;
+				position: absolute;
+				left: 0;
+				top: 0;				
+			}
+			.time{
+				height: 24px;
+				line-height: 24px;
+				width: 400px;
+				text-align: right;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="musicBox">
+			<div class="control">
+				<span class="back"><i class="fa fa-step-backward"></i></span>
+				<span class="play"><i class="fa fa-pause"></i></span>
+				<span class="next"><i class="fa fa-step-forward"></i></span>
+			</div>
+			<div class="info">
+				<div class="music_title">我的音乐</div>
+				<div class="music_author">作者</div>
+			</div>
+			<div class="bar">
+				<div class="bar_total"></div>
+				<div class="bar_now"></div>
+			</div>
+			<div class="time"><span class="nowTime">00:00</span>/<span class="totalTime">00:00</span></div>
+			<div class="volume">
+				<input type="range" onchange="change()" id="volume" min="0" max="100" value="100"/>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		var music_list = [
+			{
+				src: 'http://cloud.hunger-valley.com/music/ifyou.mp3',
+      			title: 'IF YOU',
+     			 auther: 'Big Bang'
+    		}, {
+				src: 'http://cloud.hunger-valley.com/music/玫瑰.mp3',
+				title: '玫瑰',
+				auther: '伍佰'
+			}
+		];
+		var musicNumber= music_list.length;
+		
+		//设置音乐，初始化
+		var music = new Audio();
+		music.autoplay = true;
+		var musicIndex=0;
+		loadMusic(music_list[musicIndex]);
+		
+		//加载音乐Fun
+		function loadMusic(song){
+			music.src = song.src;
+			$(".music_title").html(song.title);
+			$(".music_author").html(song.auther);
+		}
+		
+		//上一曲
+		$(".back").click(function(){
+			musicIndex--;
+			if (musicIndex<0) {
+				musicIndex=musicNumber-1;
+			}
+			console.log(musicIndex);
+			loadMusic(music_list[musicIndex]);
+		})
+		//下一曲
+		$(".next").click(function(){
+			musicIndex++;
+			if (musicIndex>musicNumber-1) {
+				musicIndex=0;
+			}
+			console.log(musicIndex);
+			loadMusic(music_list[musicIndex]);
+		})
+		//暂停，播放
+		$(".play").click(function(){
+			if ($(".play i").hasClass('fa-play')) {
+				$(".play i").removeClass('fa-play');
+				$(".play i").addClass('fa-pause');
+				music.play();
+			} else {
+				$(".play i").removeClass('fa-pause');
+				$(".play i").addClass('fa-play');
+				music.pause();
+			}
+		})
+		//音量调节
+		function change(){
+			var volumeObj = $("#volume").val()/100;
+			music.volume = volumeObj;
+		}
+		//播放时间,进度条
+		setInterval(function(){
+			var totalTime = music.duration;
+			var nowTime = music.currentTime;
+			$(".bar_now").width(nowTime/totalTime*400);
+			var totalTime_m = Math.floor(totalTime/60);
+			if (totalTime_m<10) {
+				totalTime_m = "0"+totalTime_m;
+			}
+			var totalTime_s = Math.floor(totalTime%60);
+			if (totalTime_s<10) {
+				totalTime_s = "0"+totalTime_s;
+			}
+			$(".totalTime").html(totalTime_m + ":" +totalTime_s);
+			var nowTime_m = Math.floor(nowTime/60);
+			if (nowTime_m<10) {
+				nowTime_m = "0"+nowTime_m;
+			}
+			var nowTime_s = Math.floor(nowTime%60);
+			if (nowTime_s<10) {
+				nowTime_s = "0"+nowTime_s;
+			}
+			$(".nowTime").html(nowTime_m + ":" +nowTime_s);
+		},100)
+		$(".bar").click(function(e){
+			var position_x = e.offsetX;
+			music.currentTime = position_x/400*music.duration;
+		})
+	</script>
+</html>
