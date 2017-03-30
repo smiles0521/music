@@ -32,9 +32,10 @@
 				cursor: pointer;
 			}
 			.info{
-				width: 400px;
+				width: 300px;
 				text-align: center;
 				line-height: 40px;
+				float: left;
 			}
 			.info .music_title{
 				font-size: 26px;
@@ -42,8 +43,16 @@
 			.info .music_author{
 				font-size: 20px;
 			}
+			.volume{
+				width: 100px;
+				float: left;
+				margin-top: 40px;
+			}
+			.volume input{
+				width: 100px;
+			}
 			.bar{
-				margin-top: 30px;
+				margin-top: 110px;
 				width: 400px;
 				height: 4px;
 				position: relative;
@@ -83,14 +92,14 @@
 				<div class="music_title">我的音乐</div>
 				<div class="music_author">作者</div>
 			</div>
+			<div class="volume">
+				<input type="range" onchange="change()" id="volume" min="0" max="100" value="100"/>
+			</div>
 			<div class="bar">
 				<div class="bar_total"></div>
 				<div class="bar_now"></div>
 			</div>
 			<div class="time"><span class="nowTime">00:00</span>/<span class="totalTime">00:00</span></div>
-			<div class="volume">
-				<input type="range" onchange="change()" id="volume" min="0" max="100" value="100"/>
-			</div>
 		</div>
 	</body>
 	<script type="text/javascript">
@@ -112,31 +121,18 @@
 		music.autoplay = true;
 		var musicIndex=0;
 		loadMusic(music_list[musicIndex]);
-		
-		//加载音乐Fun
-		function loadMusic(song){
-			music.src = song.src;
-			$(".music_title").html(song.title);
-			$(".music_author").html(song.auther);
+		//自动播放下一首
+		music.onended = function(){
+			nextMusic();
 		}
 		
 		//上一曲
 		$(".back").click(function(){
-			musicIndex--;
-			if (musicIndex<0) {
-				musicIndex=musicNumber-1;
-			}
-			console.log(musicIndex);
-			loadMusic(music_list[musicIndex]);
+			backMusic();
 		})
 		//下一曲
 		$(".next").click(function(){
-			musicIndex++;
-			if (musicIndex>musicNumber-1) {
-				musicIndex=0;
-			}
-			console.log(musicIndex);
-			loadMusic(music_list[musicIndex]);
+			nextMusic();
 		})
 		//暂停，播放
 		$(".play").click(function(){
@@ -155,6 +151,7 @@
 			var volumeObj = $("#volume").val()/100;
 			music.volume = volumeObj;
 		}
+		
 		//播放时间,进度条
 		setInterval(function(){
 			var totalTime = music.duration;
@@ -183,5 +180,29 @@
 			var position_x = e.offsetX;
 			music.currentTime = position_x/400*music.duration;
 		})
+		
+		
+		//加载音乐Fun
+		function loadMusic(song){
+			music.src = song.src;
+			$(".music_title").html(song.title);
+			$(".music_author").html(song.auther);
+		}
+		//下一曲Fun
+		function nextMusic(){
+			musicIndex++;
+			if (musicIndex>musicNumber-1) {
+				musicIndex=0;
+			}
+			loadMusic(music_list[musicIndex]);
+		}
+		//上一曲Fun
+		function backMusic(){
+			musicIndex--;
+			if (musicIndex<0) {
+				musicIndex=musicNumber-1;
+			}
+			loadMusic(music_list[musicIndex]);
+		}
 	</script>
 </html>
